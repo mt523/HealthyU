@@ -1,5 +1,6 @@
 package com.exlhealthcare.healthyu;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
 import android.support.v4.app.FragmentTransaction;
@@ -7,6 +8,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -44,8 +46,8 @@ public class MainActivity extends ActionBarActivity implements
         getSupportFragmentManager().beginTransaction()
             .add(R.id.fragment_container, loginFragment).commit();
         // String restURL = "http://jsonplaceholder.typicode.com/posts/";
-        String restURL = "http://10.157.102.35:8080/Programs";
-        new ApiCall(this).execute(restURL);
+        new ApiCall(this).execute(getString(R.string.rest_url));
+
     }
 
     @Override
@@ -75,6 +77,8 @@ public class MainActivity extends ActionBarActivity implements
             .replace(R.id.fragment_container, programListFragment)
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
             .addToBackStack(null).commit();
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
     }
 
     @Override
@@ -112,7 +116,9 @@ public class MainActivity extends ActionBarActivity implements
     @Override
     public void setPrograms(String[] pPrograms) {
         for (String s : pPrograms) {
-            Log.d(this.getClass().getSimpleName(), s);
+            if (s != null) {
+                Log.d(this.getClass().getSimpleName(), s);
+            }
         }
         programs = pPrograms;
     }

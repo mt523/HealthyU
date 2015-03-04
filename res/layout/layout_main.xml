@@ -32,6 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center|bottom"
         android:layout_weight=".05"
-        android:textAppearance="@android:style/TextAppearance.Small"
-        android:text="@string/copyright" />
+        android:text="@string/copyright"
+        android:textAppearance="@android:style/TextAppearance.Small" />
+
 </LinearLayout>

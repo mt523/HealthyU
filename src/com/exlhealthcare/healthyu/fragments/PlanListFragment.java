@@ -23,7 +23,7 @@ public class PlanListFragment extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater pInflater, ViewGroup pContainer,
         Bundle pSavedInstanceState) {
-        View rootView = pInflater.inflate(R.layout.program_list_fragment,
+        View rootView = pInflater.inflate(R.layout.base_list_fragment,
             pContainer, false);
         planList = (ListView) rootView.findViewById(android.R.id.list);
         planListAdapter = new BaseListAdapter(getActivity()
