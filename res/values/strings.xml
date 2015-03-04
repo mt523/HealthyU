@@ -8,6 +8,6 @@
     <string name="label_login">Log In</string>
     <string name="label_programs">Your Programs</string>
     <string name="label_plans">Your Plans</string>
-	<string name="copyright">\u00a9 EXL Healthcare 2015. All Rights Reserved.</string>
-</resources>
+    <string name="copyright">\u00a9 EXL Healthcare 2015. All Rights Reserved.</string>
 
+</resources>

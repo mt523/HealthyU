@@ -13,25 +13,24 @@ import com.exlhealthcare.healthyu.R;
 
 public class BaseListAdapter extends ArrayAdapter<String> {
 
-	private Context context;
+    private Context context;
 
-	private String[] values;
+    private String[] values;
 
-	public BaseListAdapter(Context context, String[] values) {
-		super(context, R.layout.program_list_item_view, Arrays
-				.asList(values));		
-		this.context = context;
-		this.values = values;
-	}
+    public BaseListAdapter(Context context, String[] values) {
+        super(context, R.layout.program_list_item_view, Arrays.asList(values));
+        this.context = context;
+        this.values = values;
+    }
 
-	@Override
-	public View getView(int pPosition, View pConvertView, ViewGroup pParent) {
-		LayoutInflater inflater = (LayoutInflater) context
-				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View listItemView = inflater.inflate(R.layout.program_list_item_view,
-				pParent, false);
-		TextView tv = (TextView) listItemView.findViewById(R.id.program_name);
-		tv.setText(values[pPosition]);
-		return listItemView;
-	}
+    @Override
+    public View getView(int pPosition, View pConvertView, ViewGroup pParent) {
+        LayoutInflater inflater = (LayoutInflater) context
+            .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View listItemView = inflater.inflate(R.layout.program_list_item_view,
+            pParent, false);
+        TextView tv = (TextView) listItemView.findViewById(R.id.program_name);
+        tv.setText(values[pPosition]);
+        return listItemView;
+    }
 }

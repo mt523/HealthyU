@@ -13,46 +13,46 @@ import com.exlhealthcare.healthyu.adapters.BaseListAdapter;
 
 public class ProgramListFragment extends ListFragment {
 
-	private ListView programList;
-	private BaseListAdapter programListAdapter;
-	private ProgramListInterface programListInterface;
+    private ListView programList;
+    private BaseListAdapter programListAdapter;
+    private ProgramListInterface programListInterface;
 
-	public ProgramListFragment() {
-	}
+    public ProgramListFragment() {
+    }
 
-	@Override
-	public View onCreateView(LayoutInflater pInflater, ViewGroup pContainer,
-			Bundle pSavedInstanceState) {
-		View rootView = pInflater.inflate(R.layout.program_list_fragment,
-				pContainer, false);
-		programList = (ListView) rootView.findViewById(android.R.id.list);
-		programListAdapter = new BaseListAdapter(getActivity()
-				.getApplicationContext(), new String[] { "Diabetes Management",
-				"Insomnia", "Medication Therapy Management",
-				"Smoking Cessation", "Weight Management" });
-		programList.setAdapter(programListAdapter);
-		return rootView;
-	}
+    @Override
+    public View onCreateView(LayoutInflater pInflater, ViewGroup pContainer,
+        Bundle pSavedInstanceState) {
+        View rootView = pInflater.inflate(R.layout.program_list_fragment,
+            pContainer, false);
+        programList = (ListView) rootView.findViewById(android.R.id.list);
+        programListAdapter = new BaseListAdapter(getActivity()
+            .getApplicationContext(), new String[] { "Diabetes Management",
+            "Insomnia", "Medication Therapy Management", "Smoking Cessation",
+            "Weight Management" });
+        programList.setAdapter(programListAdapter);
+        return rootView;
+    }
 
-	@Override
-	public void onListItemClick(ListView pL, View pV, int pPosition, long pId) {
-		super.onListItemClick(pL, pV, pPosition, pId);
-		programListInterface.onSelectItem(pPosition);
-	}
+    @Override
+    public void onListItemClick(ListView pL, View pV, int pPosition, long pId) {
+        super.onListItemClick(pL, pV, pPosition, pId);
+        programListInterface.onSelectItem(pPosition);
+    }
 
-	@Override
-	public void onResume() {
-		super.onResume();
-		((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(
-				R.string.label_programs);
-	}
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(
+            R.string.label_programs);
+    }
 
-	public void setProgramListInterface(
-			ProgramListInterface programListInterface) {
-		this.programListInterface = programListInterface;
-	}
+    public void setProgramListInterface(
+        ProgramListInterface programListInterface) {
+        this.programListInterface = programListInterface;
+    }
 
-	public interface ProgramListInterface {
-		public void onSelectItem(int index);
-	}
+    public interface ProgramListInterface {
+        public void onSelectItem(int index);
+    }
 }
