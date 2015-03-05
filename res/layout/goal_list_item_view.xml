@@ -5,7 +5,7 @@
     android:gravity="center" >
 
     <ImageView
-        android:id="@+id/imageView1"
+        android:id="@+id/goal_icon"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:src="@drawable/brush_icon" />
@@ -17,14 +17,14 @@
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/goal_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Brush Teeth"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <ProgressBar
-            android:id="@+id/progressBar1"
+            android:id="@+id/progress_bar"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -33,10 +33,10 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/percent_complete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Large Text"
+        android:text="42"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </LinearLayout>

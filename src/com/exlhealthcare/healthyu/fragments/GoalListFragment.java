@@ -9,12 +9,12 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.exlhealthcare.healthyu.R;
-import com.exlhealthcare.healthyu.adapters.BaseListAdapter;
+import com.exlhealthcare.healthyu.adapters.GoalListAdapter;
 
 public class GoalListFragment extends ListFragment {
 
     private ListView goalList;
-    private BaseListAdapter goalListAdapter;
+    private GoalListAdapter goalListAdapter;
     private GoalListInterface goalListInterface;
 
     public GoalListFragment() {
@@ -26,10 +26,9 @@ public class GoalListFragment extends ListFragment {
         View rootView = pInflater.inflate(R.layout.base_list_fragment,
             pContainer, false);
         goalList = (ListView) rootView.findViewById(android.R.id.list);
-        goalListAdapter = new BaseListAdapter(getActivity()
-            .getApplicationContext(), new String[] { "Diabetes Management",
-            "Insomnia", "Medication Therapy Management", "Smoking Cessation",
-            "Weight Management" });
+        goalListAdapter = new GoalListAdapter(getActivity()
+            .getApplicationContext(), new String[] { "Record Glucose",
+            "Log Meals", "Record Weight", "Brush Teeth" });
         goalList.setAdapter(goalListAdapter);
         return rootView;
     }
@@ -37,7 +36,7 @@ public class GoalListFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView pL, View pV, int pPosition, long pId) {
         super.onListItemClick(pL, pV, pPosition, pId);
-        goalListInterface.onSelectItem(pPosition);
+        goalListInterface.onSelectGoal(pPosition);
     }
 
     @Override
@@ -52,6 +51,6 @@ public class GoalListFragment extends ListFragment {
     }
 
     public interface GoalListInterface {
-        public void onSelectItem(int index);
+        public void onSelectGoal(int index);
     }
 }

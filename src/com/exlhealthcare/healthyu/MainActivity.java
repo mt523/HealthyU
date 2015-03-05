@@ -5,33 +5,36 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.exlhealthcare.healthyu.fragments.GoalListFragment;
+import com.exlhealthcare.healthyu.fragments.GoalListFragment.GoalListInterface;
 import com.exlhealthcare.healthyu.fragments.LoginFragment;
 import com.exlhealthcare.healthyu.fragments.LoginFragment.LoginInterface;
 import com.exlhealthcare.healthyu.fragments.PlanListFragment;
 import com.exlhealthcare.healthyu.fragments.PlanListFragment.PlanListInterface;
 import com.exlhealthcare.healthyu.fragments.ProgramListFragment;
 import com.exlhealthcare.healthyu.fragments.ProgramListFragment.ProgramListInterface;
-import com.exlheathcare.healthyu.util.ApiCall;
 import com.exlheathcare.healthyu.util.ApiCall.ApiCaller;
+import com.landacorp.common.model.casemanagement.EpisodeSummary;
 
 public class MainActivity extends ActionBarActivity implements
-    OnBackStackChangedListener, LoginInterface, ProgramListInterface,
-    PlanListInterface, ApiCaller {
+    OnBackStackChangedListener, ApiCaller, LoginInterface,
+    ProgramListInterface, PlanListInterface, GoalListInterface {
 
     // Programs
-    private String[] programs;
+    @SuppressWarnings("unused")
+    private EpisodeSummary[] programs;
 
     // Fragments
     LoginFragment loginFragment;
     ProgramListFragment programListFragment;
     PlanListFragment planListFragment;
+    GoalListFragment goalListFragment;
 
     // UI Components
     EditText user_id, password;
@@ -45,9 +48,7 @@ public class MainActivity extends ActionBarActivity implements
         loginFragment.setLoginInterface(this);
         getSupportFragmentManager().beginTransaction()
             .add(R.id.fragment_container, loginFragment).commit();
-        // String restURL = "http://jsonplaceholder.typicode.com/posts/";
-        new ApiCall(this).execute(getString(R.string.rest_url));
-
+        // new ApiCall(this).execute(getString(R.string.rest_url));
     }
 
     @Override
@@ -83,10 +84,6 @@ public class MainActivity extends ActionBarActivity implements
 
     @Override
     public void onBackStackChanged() {
-        shouldDisplayHomeUp();
-    }
-
-    private void shouldDisplayHomeUp() {
         boolean canback = getSupportFragmentManager().getBackStackEntryCount() > 0;
         getSupportActionBar().setDisplayHomeAsUpEnabled(canback);
     }
@@ -109,18 +106,22 @@ public class MainActivity extends ActionBarActivity implements
 
     @Override
     public void onSelectProgram(int pIndex) {
-        Toast.makeText(MainActivity.this, "Selected plan: " + pIndex,
-            Toast.LENGTH_SHORT).show();
+        goalListFragment = new GoalListFragment();
+        goalListFragment.setGoalListInterface(this);
+        getSupportFragmentManager().beginTransaction()
+            .replace(R.id.fragment_container, goalListFragment)
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+            .addToBackStack(null).commit();
     }
 
     @Override
-    public void setPrograms(String[] pPrograms) {
-        for (String s : pPrograms) {
-            if (s != null) {
-                Log.d(this.getClass().getSimpleName(), s);
-            }
-        }
+    public void setPrograms(EpisodeSummary[] pPrograms) {
         programs = pPrograms;
     }
 
+    @Override
+    public void onSelectGoal(int pIndex) {
+        Toast.makeText(MainActivity.this, "Selected goal: " + pIndex,
+            Toast.LENGTH_SHORT).show();
+    }
 }

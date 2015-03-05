@@ -11,6 +11,7 @@ import org.json.JSONException;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.landacorp.common.model.casemanagement.EpisodeSummary;
 import com.zackehh.andrest.AndrestClient;
 
 public class ApiCall extends AsyncTask<String, Void, JSONArray> {
@@ -41,12 +42,11 @@ public class ApiCall extends AsyncTask<String, Void, JSONArray> {
     @Override
     protected void onPostExecute(JSONArray data) {
         super.onPostExecute(data);
-        String[] result = new String[data.length()];
+        EpisodeSummary[] result = new EpisodeSummary[data.length()];
         for (int i = 0; i < data.length(); i++) {
             try {
-                Log.d(this.getClass().getSimpleName(), data.get(i).toString());
                 result[i] = mapper.readValue(data.get(i).toString(),
-                    String.class);
+                    EpisodeSummary.class);
             } catch (JSONException pException) {
                 Log.e(this.getClass().getSimpleName(), pException.getMessage());
             } catch (JsonParseException pException) {
@@ -69,6 +69,6 @@ public class ApiCall extends AsyncTask<String, Void, JSONArray> {
     }
 
     public interface ApiCaller {
-        public void setPrograms(String[] programs);
+        public void setPrograms(EpisodeSummary[] programs);
     }
 }
