@@ -2,7 +2,6 @@ package com.exlhealthcare.healthyu.fragments;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -17,15 +16,14 @@ import com.exlhealthcare.healthyu.adapters.BaseListAdapter;
 import com.exlheathcare.healthyu.api.ApiCall;
 import com.exlheathcare.healthyu.api.ApiCall.ApiCaller;
 
-public class ProgramListFragment extends ListFragment implements ApiCaller {
+public class IssueListFragment extends ListFragment implements ApiCaller {
+    private ListView issueList;
+    private BaseListAdapter issueListAdapter;
+    private IssueListInterface issueListInterface;
+    private JSONArray issues;
 
-    private ListView programList;
-    private BaseListAdapter programListAdapter;
-    private ProgramListInterface programListInterface;
-    private JSONArray programs;    
-
-    public ProgramListFragment(JSONArray programs) {
-        this.programs = programs;
+    public IssueListFragment(JSONArray issues) {
+        this.issues = issues;        
     }
 
     @Override
@@ -33,19 +31,19 @@ public class ProgramListFragment extends ListFragment implements ApiCaller {
         Bundle pSavedInstanceState) {
         View rootView = pInflater.inflate(R.layout.base_list_fragment,
             pContainer, false);
-        programList = (ListView) rootView.findViewById(android.R.id.list);
-        String[] programNames = new String[programs.length()];
-        for (int i = 0; i < programNames.length; i++) {
+        issueList = (ListView) rootView.findViewById(android.R.id.list);
+        String[] issueNames = new String[issues.length()];
+        for (int i = 0; i < issueNames.length; i++) {
             try {
-                programNames[i] = programs.getJSONObject(i)
-                    .getJSONObject("program").getString("description");
+                issueNames[i] = issues.getJSONObject(i)
+                    .getJSONObject("caseIssue").getString("description");
             } catch (JSONException pException) {
                 pException.printStackTrace();
             }
         }
-        programListAdapter = new BaseListAdapter(getActivity()
-            .getApplicationContext(), programNames);
-        programList.setAdapter(programListAdapter);
+        issueListAdapter = new BaseListAdapter(getActivity()
+            .getApplicationContext(), issueNames);
+        issueList.setAdapter(issueListAdapter);
         return rootView;
     }
 
@@ -54,8 +52,8 @@ public class ProgramListFragment extends ListFragment implements ApiCaller {
         super.onListItemClick(pL, pV, pPosition, pId);
         String req = "";
         try {
-            req = getString(R.string.rest_url) + "CarePlans/"
-                + programs.getJSONObject(pPosition).getString("internalId");
+            req = getString(R.string.rest_url) + "Goals/"
+                + issues.getJSONObject(pPosition).getString("internalId");
         } catch (JSONException pException) {
             pException.printStackTrace();
         }
@@ -66,20 +64,22 @@ public class ProgramListFragment extends ListFragment implements ApiCaller {
     public void onResume() {
         super.onResume();
         ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(
-            R.string.label_programs);
+            R.string.label_issues);
     }
 
-    public void setProgramListInterface(
-        ProgramListInterface programListInterface) {
-        this.programListInterface = programListInterface;
+    public void setIssueListInterface(
+        IssueListInterface issueListInterface) {
+        this.issueListInterface = issueListInterface;
     }
 
     @Override
-    public void apply(JSONArray carePlans) {
-        programListInterface.onSelectProgram(carePlans);
+    public void apply(JSONArray goals) {
+        issueListInterface.onSelectIssue(goals);
+
     }
-    
-    public interface ProgramListInterface {
-        public void onSelectProgram(JSONArray carePlans);
+
+    public interface IssueListInterface {
+        public void onSelectIssue(JSONArray goals);
     }
+
 }

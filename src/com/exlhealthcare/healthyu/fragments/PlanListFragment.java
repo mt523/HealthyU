@@ -1,5 +1,8 @@
 package com.exlhealthcare.healthyu.fragments;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v7.app.ActionBarActivity;
@@ -10,14 +13,18 @@ import android.widget.ListView;
 
 import com.exlhealthcare.healthyu.R;
 import com.exlhealthcare.healthyu.adapters.BaseListAdapter;
+import com.exlheathcare.healthyu.api.ApiCall;
+import com.exlheathcare.healthyu.api.ApiCall.ApiCaller;
 
-public class PlanListFragment extends ListFragment {
+public class PlanListFragment extends ListFragment implements ApiCaller {
 
     private ListView planList;
     private BaseListAdapter planListAdapter;
     private PlanListInterface planListInterface;
+    private JSONArray carePlans;
 
-    public PlanListFragment() {
+    public PlanListFragment(JSONArray carePlans) {
+        this.carePlans = carePlans;
     }
 
     @Override
@@ -26,10 +33,16 @@ public class PlanListFragment extends ListFragment {
         View rootView = pInflater.inflate(R.layout.base_list_fragment,
             pContainer, false);
         planList = (ListView) rootView.findViewById(android.R.id.list);
+        String[] carePlanNames = new String[carePlans.length()];
+        for (int i = 0; i < carePlans.length(); i++) {
+            try {
+                carePlanNames[i] = carePlans.getJSONObject(i).getString("name");
+            } catch (JSONException pException) {
+                pException.printStackTrace();
+            }
+        }
         planListAdapter = new BaseListAdapter(getActivity()
-            .getApplicationContext(), new String[] { "Plan 1", "Plan 2",
-            "Plan 3", "Plan 4", "Plan 5", "Plan 6", "Plan 7", "Plan 8",
-            "Plan 9", "Plan 10" });
+            .getApplicationContext(), carePlanNames);
         planList.setAdapter(planListAdapter);
         return rootView;
     }
@@ -37,7 +50,14 @@ public class PlanListFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView pL, View pV, int pPosition, long pId) {
         super.onListItemClick(pL, pV, pPosition, pId);
-        planListInterface.onSelectProgram(pPosition);
+        String req = "";
+        try {
+            req = getString(R.string.rest_url) + "Issues/"
+                + carePlans.getJSONObject(pPosition).getString("internalId");
+        } catch (JSONException pException) {
+            pException.printStackTrace();
+        }
+        new ApiCall(this).execute(req);
     }
 
     @Override
@@ -52,6 +72,11 @@ public class PlanListFragment extends ListFragment {
     }
 
     public interface PlanListInterface {
-        public void onSelectProgram(int index);
+        public void onSelectPlan(JSONArray issues);
+    }
+
+    @Override
+    public void apply(JSONArray programs) {
+        planListInterface.onSelectPlan(programs);
     }
 }

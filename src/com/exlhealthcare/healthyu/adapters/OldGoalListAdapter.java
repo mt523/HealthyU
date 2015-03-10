@@ -5,6 +5,9 @@ import java.util.Random;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff.Mode;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,13 +18,13 @@ import android.widget.TextView;
 
 import com.exlhealthcare.healthyu.R;
 
-public class GoalListAdapter extends ArrayAdapter<String> {
+public class OldGoalListAdapter extends ArrayAdapter<String> {
 
     @SuppressWarnings("unused")
     private String[] values;
     private Context context;
 
-    public GoalListAdapter(Context context, String[] values) {
+    public OldGoalListAdapter(Context context, String[] values) {
         super(context, R.layout.goal_list_item_view, Arrays.asList(values));
         this.context = context;
         this.values = values;
@@ -48,16 +51,23 @@ public class GoalListAdapter extends ArrayAdapter<String> {
         } else {
             viewHolder = (ViewHolderItem) convertView.getTag();
         }
+
+        // Temporary fudge values for goals
         int value = new Random().nextInt(101);
+
+        Drawable d = context.getResources().getDrawable(R.drawable.white_rect);
+        d.setColorFilter(getColor(value), Mode.MULTIPLY);
+        viewHolder.percentComplete.setBackground(d);
         viewHolder.percentComplete.setText(Integer.toString(value));
-        viewHolder.percentComplete.setBackgroundColor(getColor(value));
+        viewHolder.percentComplete.setPaintFlags(viewHolder.percentComplete
+            .getPaintFlags() | Paint.FAKE_BOLD_TEXT_FLAG);
+        viewHolder.progressBar.setProgress(value);
         return convertView;
     }
 
     private int getColor(int n) {
-        int r = 255 * (100 - n) / 100;
-        int g = 255 * n / 100;
-        return Color.rgb(r, g, 0);
+        float hue = (n / 100f) * 120f;
+        return Color.HSVToColor(new float[] { hue, 1f, 0.8f });
     }
 
     class ViewHolderItem {

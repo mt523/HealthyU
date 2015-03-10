@@ -8,11 +8,13 @@
         android:id="@+id/goal_icon"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:layout_margin="8dp"
         android:src="@drawable/brush_icon" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:layout_margin="8dp"
         android:gravity="center"
         android:orientation="vertical" >
 
@@ -34,9 +36,10 @@
 
     <TextView
         android:id="@+id/percent_complete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="42"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:gravity="center"
+        android:layout_margin="8dp"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </LinearLayout>

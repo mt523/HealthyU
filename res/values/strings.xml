@@ -6,10 +6,14 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="label_login">Log In</string>
-    <string name="label_programs">Your Programs</string>
-    <string name="label_plans">Your Plans</string>
+    <string name="label_programs">Programs</string>
+    <string name="label_plans">CarePlans</string>
+    <string name="label_issues">Issues</string>
     <string name="label_goals">Goals</string>
-    <string name="rest_url">http://10.157.102.35:8080/Programs</string>
+    <string name="label_goal">Goal</string>
+    <string name="lable_updateGoal">Update Goal</string>
+    <string name="rest_url">http://10.157.102.35:8080/</string>    
+    <string name="program_id">TESTMEMBER</string>    
     <string name="copyright">\u00a9 EXL Healthcare 2015. All Rights Reserved.</string>
 
 </resources>

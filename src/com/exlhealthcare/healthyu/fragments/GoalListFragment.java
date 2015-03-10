@@ -1,5 +1,9 @@
 package com.exlhealthcare.healthyu.fragments;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v7.app.ActionBarActivity;
@@ -9,15 +13,18 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.exlhealthcare.healthyu.R;
-import com.exlhealthcare.healthyu.adapters.GoalListAdapter;
+import com.exlhealthcare.healthyu.adapters.BaseListAdapter;
+import com.exlheathcare.healthyu.api.ApiCall;
+import com.exlheathcare.healthyu.api.ApiCall.ApiCaller;
 
-public class GoalListFragment extends ListFragment {
-
+public class GoalListFragment extends ListFragment implements ApiCaller {
     private ListView goalList;
-    private GoalListAdapter goalListAdapter;
+    private BaseListAdapter goalListAdapter;
     private GoalListInterface goalListInterface;
+    private JSONArray goals;
 
-    public GoalListFragment() {
+    public GoalListFragment(JSONArray goals) {
+        this.goals = goals;
     }
 
     @Override
@@ -26,9 +33,17 @@ public class GoalListFragment extends ListFragment {
         View rootView = pInflater.inflate(R.layout.base_list_fragment,
             pContainer, false);
         goalList = (ListView) rootView.findViewById(android.R.id.list);
-        goalListAdapter = new GoalListAdapter(getActivity()
-            .getApplicationContext(), new String[] { "Record Glucose",
-            "Log Meals", "Record Weight", "Brush Teeth" });
+        String[] goalNames = new String[goals.length()];
+        for (int i = 0; i < goalNames.length; i++) {
+            try {
+                goalNames[i] = goals.getJSONObject(i).getJSONObject("caseGoal")
+                    .getString("description");
+            } catch (JSONException pException) {
+                pException.printStackTrace();
+            }
+        }
+        goalListAdapter = new BaseListAdapter(getActivity()
+            .getApplicationContext(), goalNames);
         goalList.setAdapter(goalListAdapter);
         return rootView;
     }
@@ -36,7 +51,14 @@ public class GoalListFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView pL, View pV, int pPosition, long pId) {
         super.onListItemClick(pL, pV, pPosition, pId);
-        goalListInterface.onSelectGoal(pPosition);
+        String req = "";
+        try {
+            req = getString(R.string.rest_url) + "Goal/"
+                + goals.getJSONObject(pPosition).getString("internalId");
+        } catch (JSONException pException) {
+            pException.printStackTrace();
+        }
+        new ApiCall(this).execute(req);
     }
 
     @Override
@@ -50,7 +72,18 @@ public class GoalListFragment extends ListFragment {
         this.goalListInterface = goalListInterface;
     }
 
-    public interface GoalListInterface {
-        public void onSelectGoal(int index);
+    @Override
+    public void apply(JSONArray goal) {
+        try {
+            goalListInterface.onSelectGoal(goal.getJSONObject(0));
+        } catch (JSONException pException) {
+            pException.printStackTrace();
+        }
+
     }
+
+    public interface GoalListInterface {
+        public void onSelectGoal(JSONObject goal);
+    }
+
 }

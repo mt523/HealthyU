@@ -1,5 +1,8 @@
 package com.exlhealthcare.healthyu;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
@@ -9,32 +12,37 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.Toast;
 
+import com.exlhealthcare.healthyu.fragments.GoalFragment;
+import com.exlhealthcare.healthyu.fragments.GoalFragment.GoalFragmentInterface;
 import com.exlhealthcare.healthyu.fragments.GoalListFragment;
 import com.exlhealthcare.healthyu.fragments.GoalListFragment.GoalListInterface;
+import com.exlhealthcare.healthyu.fragments.GoalUpdateFragment;
+import com.exlhealthcare.healthyu.fragments.IssueListFragment;
+import com.exlhealthcare.healthyu.fragments.IssueListFragment.IssueListInterface;
 import com.exlhealthcare.healthyu.fragments.LoginFragment;
 import com.exlhealthcare.healthyu.fragments.LoginFragment.LoginInterface;
 import com.exlhealthcare.healthyu.fragments.PlanListFragment;
 import com.exlhealthcare.healthyu.fragments.PlanListFragment.PlanListInterface;
 import com.exlhealthcare.healthyu.fragments.ProgramListFragment;
 import com.exlhealthcare.healthyu.fragments.ProgramListFragment.ProgramListInterface;
-import com.exlheathcare.healthyu.util.ApiCall.ApiCaller;
-import com.landacorp.common.model.casemanagement.EpisodeSummary;
+import com.exlheathcare.healthyu.api.ApiCall;
+import com.exlheathcare.healthyu.api.ApiCall.ApiCaller;
 
 public class MainActivity extends ActionBarActivity implements
     OnBackStackChangedListener, ApiCaller, LoginInterface,
-    ProgramListInterface, PlanListInterface, GoalListInterface {
-
-    // Programs
-    @SuppressWarnings("unused")
-    private EpisodeSummary[] programs;
+    ProgramListInterface, PlanListInterface, IssueListInterface,
+    GoalListInterface, GoalFragmentInterface {
 
     // Fragments
     LoginFragment loginFragment;
+
     ProgramListFragment programListFragment;
     PlanListFragment planListFragment;
+    IssueListFragment issueListFragment;
     GoalListFragment goalListFragment;
+    GoalFragment goalFragment;
+    GoalUpdateFragment goalUpdateFragment;
 
     // UI Components
     EditText user_id, password;
@@ -48,7 +56,6 @@ public class MainActivity extends ActionBarActivity implements
         loginFragment.setLoginInterface(this);
         getSupportFragmentManager().beginTransaction()
             .add(R.id.fragment_container, loginFragment).commit();
-        // new ApiCall(this).execute(getString(R.string.rest_url));
     }
 
     @Override
@@ -72,14 +79,8 @@ public class MainActivity extends ActionBarActivity implements
 
     @Override
     public void onLogin() {
-        programListFragment = new ProgramListFragment();
-        programListFragment.setProgramListInterface(this);
-        getSupportFragmentManager().beginTransaction()
-            .replace(R.id.fragment_container, programListFragment)
-            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-            .addToBackStack(null).commit();
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        new ApiCall(this).execute(getString(R.string.rest_url) + "Programs/"
+            + getString(R.string.program_id));
     }
 
     @Override
@@ -95,8 +96,8 @@ public class MainActivity extends ActionBarActivity implements
     }
 
     @Override
-    public void onSelectItem(int pIndex) {
-        planListFragment = new PlanListFragment();
+    public void onSelectProgram(JSONArray carePlans) {
+        planListFragment = new PlanListFragment(carePlans);
         planListFragment.setPlanListInterface(this);
         getSupportFragmentManager().beginTransaction()
             .replace(R.id.fragment_container, planListFragment)
@@ -105,8 +106,18 @@ public class MainActivity extends ActionBarActivity implements
     }
 
     @Override
-    public void onSelectProgram(int pIndex) {
-        goalListFragment = new GoalListFragment();
+    public void onSelectPlan(JSONArray issues) {
+        issueListFragment = new IssueListFragment(issues);
+        issueListFragment.setIssueListInterface(this);
+        getSupportFragmentManager().beginTransaction()
+            .replace(R.id.fragment_container, issueListFragment)
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+            .addToBackStack(null).commit();
+    }
+
+    @Override
+    public void onSelectIssue(JSONArray goals) {
+        goalListFragment = new GoalListFragment(goals);
         goalListFragment.setGoalListInterface(this);
         getSupportFragmentManager().beginTransaction()
             .replace(R.id.fragment_container, goalListFragment)
@@ -115,13 +126,34 @@ public class MainActivity extends ActionBarActivity implements
     }
 
     @Override
-    public void setPrograms(EpisodeSummary[] pPrograms) {
-        programs = pPrograms;
+    public void onSelectGoal(JSONObject goal) {
+        GoalFragment goalFragment = new GoalFragment(goal);
+        goalFragment.setGoalFragmentInterface(this);
+        getSupportFragmentManager().beginTransaction()
+            .replace(R.id.fragment_container, goalFragment)
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+            .addToBackStack(null).commit();
     }
 
     @Override
-    public void onSelectGoal(int pIndex) {
-        Toast.makeText(MainActivity.this, "Selected goal: " + pIndex,
-            Toast.LENGTH_SHORT).show();
+    public void apply(JSONArray programs) {
+        programListFragment = new ProgramListFragment(programs);
+        programListFragment.setProgramListInterface(this);
+        getSupportFragmentManager().beginTransaction()
+            .replace(R.id.fragment_container, programListFragment)
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+            .addToBackStack(null).commit();
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
     }
+
+    @Override
+    public void onUpdateGoal(JSONObject goal) {
+        goalUpdateFragment = new GoalUpdateFragment(goal);        
+        getSupportFragmentManager().beginTransaction()
+            .replace(R.id.fragment_container, goalUpdateFragment)
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+            .addToBackStack(null).commit();
+    }
+
 }
